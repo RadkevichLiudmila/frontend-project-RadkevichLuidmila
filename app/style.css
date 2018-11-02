@@ -1,0 +1,21 @@
+p {
+  font-size: 24px;
+  font-weight: bold;
+}
+#playingField {
+  position: relative;
+  border: 1px solid  black;
+  background: #FAF0E6;
+}
+#ball {
+  border-radius: 50%;
+  position: absolute;
+  background: red;
+  margin:-15px 0 0 -15px;
+  transition: top 0.5s, left 0.5s;
+  -webkit-transition: top 0.5s, left 0.5s;
+}
+#barrier {
+  position: absolute;
+  background: black;
+}
