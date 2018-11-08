@@ -4,9 +4,12 @@ const fieldHeight = 400; // высота игрового поля
 const sizeBall = 20; // размер шарика
 const sizeBlock = 20; // размер блока
 let matrixField = []; // матрица поля, для того, чтобы узнать положение объектов
-let X = 0; // переменная следит за положением мыши по оси Х и передает данные шарику
-let Y = 0; // переменная следит за положением мыши по оси Y и передает данные шарику
+let mouseX = 0; // переменная следит за положением мыши по оси Х и передает данные шарику
+let mouseY = 0; // переменная следит за положением мыши по оси Y и передает данные шарику
+let distanceMouseForBallX = 0; // расстояние от начала window до игрового поля по Х
+let distanceMouseForBallY = 0; // расстояние от начала window до игрового поля по Y
 let timerForBarrier, timerForBonus; //таймеры
+
 let timerForBall =
   // находим, какой requestAnimationFrame доступен
   window.requestAnimationFrame ||
@@ -19,25 +22,24 @@ let timerForBall =
       window.setTimeout(callback, 1000 / 60);
   };
 
-
 document.getElementsByTagName('body')[0].id = 'body';
 let body = document.getElementById('body');
 body.appendChild(createContainer());
 
 function createContainer() {
   let container = document.createElement('div');
-  //container.id = 'container';
-  container.appendChild(createButton());
+  container.appendChild(createButton('button', 'новая игра'));
   container.appendChild(createGoal());
   container.appendChild(createPlayingField());
   return container;
 }
 
-function createButton() {
+function createButton(id, text) {
   let button = document.createElement('input');
-  button.id = 'button';
+  button.id = id;
   button.type = 'button';
-  button.value = 'Старт!';
+  button.className = 'button';
+  button.value = text;
   return button;
 }
 
@@ -53,7 +55,6 @@ function createPlayingField() {
   playingField.id = 'playingField';
   playingField.appendChild(createElement('ball'));
   playingField.appendChild(createElement('bonus'));
-  //playingField.appendChild(createElement('barrier'));
   return playingField;
 }
 
@@ -63,6 +64,7 @@ function createElement(name) {
   element.appendChild(createImage(name));
   return element;
 }
+
 function createImage(name) {
   let img = document.createElement('img');
   if (name === 'barrier') {
@@ -73,16 +75,14 @@ function createImage(name) {
     img.src = 'img/player.png';
     img.width = sizeBall;
     img.height = sizeBall;
-  } else  {
+  } else {
     img.src = 'img/treasure.jpg';
     img.width = sizeBlock;
     img.height = sizeBlock;
   }
-  
+
   return img;
 }
-
-
 
 //-----------------------------------------------------------
 let field = {
@@ -117,14 +117,13 @@ function DescriptionOfObject(Width, Height, PosX, PosY, Id) {
     Obj.style.height = this.Height + 'px';
     Obj.style.left = this.PosX + 'px';
     Obj.style.top = this.PosY + 'px';
-    
   }
 }
- 
-let ball = new DescriptionOfObject(sizeBall, sizeBall, Math.random() * (fieldWidth - sizeBall), Math.random() * (fieldHeight - sizeBall), 'ball');
-let coordFoBonusX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
-let coordFoBonusY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
-let bonus = new DescriptionOfObject(sizeBlock, sizeBlock, coordFoBonusX, coordFoBonusY, 'bonus'); 
+
+let ball = new DescriptionOfObject(sizeBall, sizeBall, fieldWidth / 2, fieldHeight / 2, 'ball');
+let coordForBonusX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
+let coordForBonusY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
+let bonus = new DescriptionOfObject(sizeBlock, sizeBlock, coordForBonusX, coordForBonusY, 'bonus');
 
 let barrier = {
   Width: sizeBlock,
@@ -144,35 +143,39 @@ let barrier = {
   }
 }
 
-
-//--------------------- нажали на кнопку Старт! ---------------------
+//--------------------- нажали на кнопку новая игра ---------------------
 
 document.getElementById('button').addEventListener('click', function () {
-  X = ball.PosX;
-  Y = ball.PosY;
+  document.getElementById('playingField').appendChild(createButton('go', 'поехали'));
+  document.getElementById('go').addEventListener('click', startGame, false);
   matrixField = matrixArray();
   newGameField();
-  document.body.addEventListener('mousemove', dragMove, false);
-  
-  PlanNextTick();
-  //timerForBall = setInterval(moveBall, 40);
-  timerForBarrier = setTimeout(createBarrier, 3000);
-  timerForBonus = setTimeout(deleteBonus, 3000);
-  //window.setTimeout(callback, 1000 / 60);
-
+  stopGame();
 });
 
+//----------- поехали -------------------
+function startGame() {
+  document.getElementById('go').remove();
+  document.body.style.cursor = 'none';
+  distanceMouseForBallX = sizeBall / 2 + document.getElementById('playingField').offsetLeft;
+  distanceMouseForBallY = sizeBall / 2 + document.getElementById('playingField').offsetTop;
+  mouseX = event.clientX - distanceMouseForBallX;
+  mouseY = event.clientY - distanceMouseForBallY;
 
-  function PlanNextTick() {
-    timerForBall(moveBall);
-  }
+  document.body.addEventListener('mousemove', dragMove, false);
+
+  // запускаем таймеры
+  PlanNextTick();
+  timerForBarrier = setTimeout(createBarrier, 3000);
+  timerForBonus = setTimeout(deleteBonus, 3000);
+}
 
 // создаем пустую матрицу, которая следит за положением элементов на поле
-function matrixArray(){
+function matrixArray() {
   let arr = new Array();
-  for(let i=0; i < fieldHeight / 20; i++){
+  for (let i=0; i < fieldHeight / 20; i++) {
     arr[i] = new Array();
-    for(let j=0; j < fieldWidth / 20; j++){
+    for (let j=0; j < fieldWidth / 20; j++) {
       arr[i][j] = 0;
     }
   }
@@ -181,65 +184,105 @@ function matrixArray(){
 }
 // обновляет поле при запуске игры
 function newGameField() {
-  document.body.style.cursor = 'none';
 
   // удаляем все элементы с поля, кроме главного игрока
   let playingField = document.getElementById('playingField');
-  for (var i = 0; i < playingField.childNodes.length; i++) { 
+  for (let i = 0; i < playingField.childNodes.length; i++) {
     if (playingField.childNodes[i].id === 'barrier') {
       playingField.removeChild(playingField.childNodes[i]);
       i--;
     }
   }
-  
+
  // обнуляем счет
   goal.player = 0;
   goal.Update();
 }
 
-// движение игрока
-function moveBall() {
-  
-    // игрок не выходит за пределы игрового поля
-    if (X > 0 && X < fieldWidth - sizeBall && Y > 0 && Y < fieldHeight - sizeBall) {  
-      ball.PosX = X;
-      ball.PosY = Y;
-      //stopGame();
-    } 
-  
-  // игрок споймал бонус
-  if (matrixField[ Math.floor(ball.PosY / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 2 ||  
-    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 2 || 
-    matrixField[Math.floor(ball.PosY / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2 || 
-    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2) {
-      goal.player += 10;
-      goal.Update();
-      clearTimeout(timerForBonus);
-      deleteBonus(); 
-  }
-
-  // игрок столкнулся с препятствием - игра останавливается
-  if (matrixField[ Math.floor(ball.PosY / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 1 ||  
-    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 1 || 
-    matrixField[Math.floor(ball.PosY / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 1 || 
-    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 1) {
-      stopGame();
-  }
-
-  PlanNextTick();
-  ball.Update();
-}
 function stopGame() {
-  clearTimeout(timerForBall);
   clearTimeout(timerForBarrier);
   clearTimeout(timerForBonus);
   document.body.removeEventListener('mousemove', dragMove, false);
   document.body.style.cursor = 'auto';
 }
+
+function PlanNextTick() {
+  timerForBall(moveBall);
+}
+
+// движение игрока
+function moveBall() {
+  let checkMoveGame = true;
+
+  // проверяем не вышла ли мышка за пределы поля
+  if (mouseX <= sizeBall / 2) {
+    mouseX = 0;
+    checkMoveGame = false;
+  }
+  if (mouseX >= fieldWidth - sizeBall / 2) {
+    mouseX = fieldWidth - sizeBall;
+    checkMoveGame = false;
+  }
+  if (mouseY <= sizeBall / 2) {
+    mouseY = 0;
+    checkMoveGame = false;
+  }
+  if (mouseY >= fieldHeight - sizeBall / 2) {
+    mouseY = fieldHeight - sizeBall;
+    checkMoveGame = false;
+  }
+
+  // проставляем координаты для игрока
+  ball.PosX = mouseX;
+  ball.PosY = mouseY;
+
+  // проверяем координаты игрока
+  if (ball.PosX <= 0 || ball.PosX >= fieldWidth - sizeBall || ball.PosY <= 0 || ball.PosY >= fieldHeight - sizeBall) {
+    checkMoveGame = false;
+  }
+
+  if (!checkMoveGame) {
+    ball.Update();
+    stopGame();
+    return checkMoveGame;
+  }
+
+  // игрок столкнулся с препятствием - игра останавливается
+  if (matrixField[ Math.floor(ball.PosY / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 1 ||
+    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 1 ||
+    matrixField[Math.floor(ball.PosY / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 1 ||
+    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 1) {
+      ball.Update();
+      stopGame();
+      return false;
+}
+
+  // игрок споймал бонус
+  if (matrixField[ Math.floor(ball.PosY / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 2 ||
+    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 2 ||
+    matrixField[Math.floor(ball.PosY / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2 ||
+    matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2) {
+      goal.player += 10;
+      goal.Update();
+      clearTimeout(timerForBonus);
+      deleteBonus();
+  }
+
+  PlanNextTick();
+  ball.Update();
+}
+
 // отслеживаем движение курсора
-function dragMove(e) {
-  X = e.clientX; 
-  Y = e.clientY; 
+function dragMove(event) {
+  event = event || window.event;
+  mouseX = event.clientX - distanceMouseForBallX;
+  mouseY = event.clientY - distanceMouseForBallY;
+}
+
+// перемещаем бонус, который уже пойман
+function deleteBonus() {
+  matrixField[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 0;
+  createBonus();
 }
 
 //создаем бонус
@@ -250,24 +293,15 @@ function createBonus() {
     createBonus();
   } else {
     bonus.PosX = coordX;
-  bonus.PosY = coordY;
-  matrixField[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 2;
-  timerForBonus = setTimeout(deleteBonus, 3000);
-  bonus.Update();
+    bonus.PosY = coordY;
+    matrixField[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 2;
+    timerForBonus = setTimeout(deleteBonus, 3000);
+    bonus.Update();
   }
-}
-// удаляем бонус, который уже пойман
-function deleteBonus() {
-  matrixField[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 0;
- /* let del = document.getElementById('bonus');
-  document.getElementById('playingField').removeChild(del);*/
-  createBonus();
 }
 
 // создаем препяпятствие
 function createBarrier() {
-  //createBar();
- //let barrier = new DescriptionOfObject(sizeBlock, sizeBlock, 0, 0, 'barrier');
   barrier.PosX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
   barrier.PosY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
   matrixField[barrier.PosY / sizeBlock][barrier.PosX / sizeBlock] = 1;

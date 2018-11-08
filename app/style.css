@@ -1,16 +1,22 @@
 #button, #playingField {
   display: block;
-    margin-left: auto;
-    margin-right: auto 
-  /*display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;*/
+  margin-left: auto;
+  margin-right: auto;
 }
-#goal {
-
+.button {
+  margin: 10px;
+  padding: 10px;
+  background: #76b1f5;
+  border: #3172bb;
+  border-radius: 5%;
 }
-
+#go {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);  
+}
 p {
   font-size: 24px;
   font-weight: bold;
@@ -35,9 +41,5 @@ p {
 }
 #bonus {
   position: absolute;
-  
-}
-#block {
-  position: absolute;
-  background: #FFF0F5;
+  background: green;
 }
