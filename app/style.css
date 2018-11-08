@@ -1,16 +1,30 @@
+#button, #playingField {
+  display: block;
+    margin-left: auto;
+    margin-right: auto 
+  /*display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;*/
+}
+#goal {
+
+}
+
 p {
   font-size: 24px;
   font-weight: bold;
+  text-align: center;
 }
 #playingField {
   position: relative;
   border: 1px solid  black;
-  background: #FAF0E6;
+  background: #F4F4F4;
 }
 #ball {
   border-radius: 50%;
   position: absolute;
-  background: red;
+  background: #F0463A;
   /* margin:-15px 0 0 -15px;
   transition: top 0.5s, left 0.5s;
   -webkit-transition: top 0.5s, left 0.5s; */
@@ -21,5 +35,9 @@ p {
 }
 #bonus {
   position: absolute;
-  background: green;
+  
+}
+#block {
+  position: absolute;
+  background: #FFF0F5;
 }
