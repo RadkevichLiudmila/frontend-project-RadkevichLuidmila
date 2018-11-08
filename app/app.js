@@ -6,7 +6,18 @@ const sizeBlock = 20; // размер блока
 let matrixField = []; // матрица поля, для того, чтобы узнать положение объектов
 let X = 0; // переменная следит за положением мыши по оси Х и передает данные шарику
 let Y = 0; // переменная следит за положением мыши по оси Y и передает данные шарику
-let time1, time2, time4; //таймеры
+let timerForBarrier, timerForBonus; //таймеры
+let timerForBall =
+  // находим, какой requestAnimationFrame доступен
+  window.requestAnimationFrame ||
+  window.webkitRequestAnimationFrame ||
+  window.mozRequestAnimationFrame ||
+  window.oRequestAnimationFrame ||
+  window.msRequestAnimationFrame ||
+  // ни один не доступен - будем работать просто по таймеру
+  function (callback) {
+      window.setTimeout(callback, 1000 / 60);
+  };
 
 
 document.getElementsByTagName('body')[0].id = 'body';
@@ -140,14 +151,21 @@ document.getElementById('button').addEventListener('click', function () {
   X = ball.PosX;
   Y = ball.PosY;
   matrixField = matrixArray();
-  updateField();
+  newGameField();
   document.body.addEventListener('mousemove', dragMove, false);
   
-  time1 = setInterval(moveBall, 40);
-  time2 = setInterval(createBarrier, 3000);
-  time4 = setInterval(deleteBonus, 3000);
+  PlanNextTick();
+  //timerForBall = setInterval(moveBall, 40);
+  timerForBarrier = setTimeout(createBarrier, 3000);
+  timerForBonus = setTimeout(deleteBonus, 3000);
+  //window.setTimeout(callback, 1000 / 60);
 
 });
+
+
+  function PlanNextTick() {
+    timerForBall(moveBall);
+  }
 
 // создаем пустую матрицу, которая следит за положением элементов на поле
 function matrixArray(){
@@ -162,17 +180,19 @@ function matrixArray(){
   return arr;
 }
 // обновляет поле при запуске игры
-function updateField() {
+function newGameField() {
   document.body.style.cursor = 'none';
 
   // удаляем все элементы с поля, кроме главного игрока
-  let del = document.getElementById('playingField');
-  while (del.firstChild) {
-    if (del.firstChild.id !== 'ball' && del.firstChild.id !== 'bonus') {
-      del.removeChild(del.firstChild);
-    } else break;
+  let playingField = document.getElementById('playingField');
+  for (var i = 0; i < playingField.childNodes.length; i++) { 
+    if (playingField.childNodes[i].id === 'barrier') {
+      playingField.removeChild(playingField.childNodes[i]);
+      i--;
+    }
   }
- // createBonus();
+  
+ // обнуляем счет
   goal.player = 0;
   goal.Update();
 }
@@ -194,6 +214,7 @@ function moveBall() {
     matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2) {
       goal.player += 10;
       goal.Update();
+      clearTimeout(timerForBonus);
       deleteBonus(); 
   }
 
@@ -205,12 +226,13 @@ function moveBall() {
       stopGame();
   }
 
+  PlanNextTick();
   ball.Update();
 }
 function stopGame() {
-  clearInterval(time1);
-  clearInterval(time2);
-  clearInterval(time4);
+  clearTimeout(timerForBall);
+  clearTimeout(timerForBarrier);
+  clearTimeout(timerForBonus);
   document.body.removeEventListener('mousemove', dragMove, false);
   document.body.style.cursor = 'auto';
 }
@@ -230,6 +252,7 @@ function createBonus() {
     bonus.PosX = coordX;
   bonus.PosY = coordY;
   matrixField[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 2;
+  timerForBonus = setTimeout(deleteBonus, 3000);
   bonus.Update();
   }
 }
@@ -248,6 +271,7 @@ function createBarrier() {
   barrier.PosX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
   barrier.PosY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
   matrixField[barrier.PosY / sizeBlock][barrier.PosX / sizeBlock] = 1;
+  timerForBarrier = setTimeout(createBarrier, 3000);
   barrier.Update();
 }
 
