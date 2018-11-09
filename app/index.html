@@ -1,11 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
     <title>Собиратель сокровищ</title>
+
 </head>
 <body>
-    <script src="app.js"></script>
+
+    <div id='IPage'></div>
+    <div id='IPageGame'></div>
+
+    <script src="dom.js"></script>
+    <script src="app.js" id="app"></script>
+
+    <br>
+
+    <input type=button class=button value='Главная' onclick='SwitchToMainPage()'>
+    <input type=button class=button value='Регистрация' onclick='SwitchToLoginPage()'>
+    <input type=button class=button value='Игра' onclick='SwitchToGamePage()'>
+    <input type=button class=button value='Результаты' onclick='SwitchToBestPage()'>
+
 </body>
 </html>

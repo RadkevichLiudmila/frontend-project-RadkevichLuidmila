@@ -21,13 +21,16 @@ let timerForBall =
   function (callback) {
       window.setTimeout(callback, 1000 / 60);
   };
-
+/*
 document.getElementsByTagName('body')[0].id = 'body';
 let body = document.getElementById('body');
 body.appendChild(createContainer());
-
+*/
+//let container = document.getElementById('IPage');
+createContainer();
 function createContainer() {
-  let container = document.createElement('div');
+  //let container = document.createElement('div');
+  let container = document.getElementById('IPageGame');
   container.appendChild(createButton('button', 'новая игра'));
   container.appendChild(createGoal());
   container.appendChild(createPlayingField());
