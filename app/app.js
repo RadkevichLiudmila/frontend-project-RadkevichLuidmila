@@ -10,6 +10,10 @@ let distanceMouseForBallX = 0; // расстояние от начала window 
 let distanceMouseForBallY = 0; // расстояние от начала window до игрового поля по Y
 let timerForBarrier, timerForBonus; //таймеры
 
+const ClickAudioBonus = new Audio('audio/KoopaTroopaHide.wav');
+const ClickAudioBarrier = new Audio('audio/Creature.wav');
+
+
 let timerForBall =
   // находим, какой requestAnimationFrame доступен
   window.requestAnimationFrame ||
@@ -21,6 +25,9 @@ let timerForBall =
   function (callback) {
       window.setTimeout(callback, 1000 / 60);
   };
+
+ 
+       
 /*
 document.getElementsByTagName('body')[0].id = 'body';
 let body = document.getElementById('body');
@@ -247,6 +254,7 @@ function moveBall() {
   if (!checkMoveGame) {
     ball.Update();
     stopGame();
+    ClickAudioBarrier.play();
     return checkMoveGame;
   }
 
@@ -257,6 +265,7 @@ function moveBall() {
     matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 1) {
       ball.Update();
       stopGame();
+      ClickAudioBarrier.play();
       return false;
 }
 
@@ -265,6 +274,7 @@ function moveBall() {
     matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor(ball.PosX / sizeBlock)] === 2 ||
     matrixField[Math.floor(ball.PosY / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2 ||
     matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 2) {
+      ClickAudioBonus.play();
       goal.player += 10;
       goal.Update();
       clearTimeout(timerForBonus);
