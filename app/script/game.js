@@ -13,6 +13,28 @@ let timerForBarrier, timerForBonus; //таймеры
 const ClickAudioBonus = new Audio('audio/KoopaTroopaHide.wav');
 const ClickAudioBarrier = new Audio('audio/Creature.wav');
 
+let AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
+let storageAJAX ={};
+let myName = 'Radkevich_project_results';
+
+// забрали данные с сервера
+  $.ajax(
+    {
+      url: AjaxHandlerScript,
+      type: 'POST',
+      data: {f: 'READ', n: myName},
+      cache: false,
+      success: writeReady,
+      error: ErrorHandler
+    }
+  );
+
+// сохранили данные в массив
+function writeReady(Result) {
+  storageAJAX = JSON.parse(Result.result);
+}
+
+
 
 let timerForBall =
   // находим, какой requestAnimationFrame доступен
@@ -101,7 +123,8 @@ let goal = {
   player: 0,
   Update: function () {
     let goal = document.getElementById('goal');
-    goal.textContent = 'Вы набрали ' + this.player + ' очков';
+    const namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
+    goal.textContent = namePlayer + '! Вы набрали ' + this.player + ' очков';
   }
 }
 
@@ -151,12 +174,16 @@ document.getElementById('button').addEventListener('click', function () {
   document.getElementById('go').addEventListener('click', startGame, false);
   matrixField = matrixArray();
   newGameField();
-  stopGame();
+  updateGame();
 });
 
 //----------- поехали -------------------
 function startGame() {
   document.getElementById('go').remove();
+  if (document.getElementById('gameEnd') !== null) {
+    document.getElementById('gameEnd').remove();
+  }
+
   document.body.style.cursor = 'none';
   distanceMouseForBallX = sizeBall / 2 + document.getElementById('playingField').offsetLeft;
   distanceMouseForBallY = sizeBall / 2 + document.getElementById('playingField').offsetTop;
@@ -200,7 +227,7 @@ function newGameField() {
   goal.Update();
 }
 
-function stopGame() {
+function updateGame() {
   clearTimeout(timerForBarrier);
   clearTimeout(timerForBonus);
   document.body.removeEventListener('mousemove', dragMove, false);
@@ -245,7 +272,6 @@ function moveBall() {
   if (!checkMoveGame) {
     ball.Update();
     stopGame();
-    ClickAudioBarrier.play();
     return checkMoveGame;
   }
 
@@ -256,7 +282,6 @@ function moveBall() {
     matrixField[Math.floor((ball.PosY + sizeBall) / sizeBlock)][Math.floor((ball.PosX + sizeBall) / sizeBlock)] === 1) {
       ball.Update();
       stopGame();
-      ClickAudioBarrier.play();
       return false;
 }
 
@@ -311,6 +336,92 @@ function createBarrier() {
   matrixField[barrier.PosY / sizeBlock][barrier.PosX / sizeBlock] = 1;
   timerForBarrier = setTimeout(createBarrier, 3000);
   barrier.Update();
+}
+
+function stopGame() {
+  ClickAudioBarrier.play();
+  clearTimeout(timerForBarrier);
+  clearTimeout(timerForBonus);
+  document.body.removeEventListener('mousemove', dragMove, false);
+  document.body.style.cursor = 'auto';
+  theEnd();
+  addResultLocalStorage();
+  addResultAJAXStorage();
+}
+
+function theEnd() {
+  document.getElementById('playingField').appendChild(createResult());
+  function createResult() {
+    let gameEnd = document.createElement('p');
+    gameEnd.id = 'gameEnd';
+    gameEnd.textContent = 'Вы проиграли!';
+    return gameEnd;
+  }
+}
+
+function addResultLocalStorage() {
+
+  let namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
+  let bestResult = JSON.parse(localStorage.getItem('BESTResult')) || [namePlayer, 0];
+  localStorage.setItem('NamePlayer', JSON.stringify(namePlayer));
+
+  if (bestResult[1] < goal.player) {
+    bestResult[0] = namePlayer;
+    bestResult[1] = goal.player;
+    localStorage.setItem('BESTResult', JSON.stringify(bestResult));
+  }
+
+}
+
+function addResultAJAXStorage() {
+
+  let namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
+
+  if (!storageAJAX[namePlayer]) {
+    storageAJAX[namePlayer] = 0;
+  }
+  if (storageAJAX[namePlayer] < goal.player) {
+    storageAJAX[namePlayer] = goal.player;
+  }
+
+   // подготавливаем сервер к изменениям
+
+    let updatePassword = Math.random();
+    $.ajax({
+      url: AjaxHandlerScript,
+      type: 'POST',
+      data: {
+        f: 'LOCKGET', n: myName,
+        p: updatePassword
+      },
+      cache: false,
+      success: updateServer,
+      error: ErrorHandler
+    });
+
+
+  // посылаем измененный массив на сервер
+
+    function updateServer() {
+    $.ajax({
+      url : AjaxHandlerScript,
+      type : 'POST',
+      data: {f: 'UPDATE', n: myName,
+          v : JSON.stringify(storageAJAX), p: updatePassword},
+      cache: false,
+      success:  function(Result) {
+        console.log(Result);
+      },
+      error: ErrorHandler
+    });
+
+  }
+  console.log (storageAJAX);
+
+}
+
+function ErrorHandler(jqXHR, StatusStr, ErrorStr) {
+  alert(StatusStr + ' ' + ErrorStr);
 }
 
 field.Update();

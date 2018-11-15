@@ -1,5 +1,5 @@
 'use strict';
-window.onhashchange=SwitchToStateFromURLHash;
+window.onhashchange = SwitchToStateFromURLHash;
 
 let SPAStateH = {}; // могут быть элементы pagename и photoid
 
@@ -34,9 +34,13 @@ function SwitchToStateFromURLHash() {
       break;
 
     case 'Login':
+    let namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
+    localStorage.setItem('NamePlayer', JSON.stringify(namePlayer));
       PageHTML += "<h3>Регистрация игрока</h3>";
-      PageHTML += "<input id='namePlayer' value='Player 1'></input>";
       PageHTML += "<p>Введите имя игрока</p>";
+      PageHTML += `<input id='namePlayer' value=${namePlayer}></input>`;
+      PageHTML += '<br>';
+      PageHTML += "<input type=button value='Сохранить' onclick='saveNamePlayer()'>";
       document.getElementById('IPageGame').style.display = 'none';
       break;
 
@@ -47,8 +51,8 @@ function SwitchToStateFromURLHash() {
 
     case 'Best':
       PageHTML+="<h3>Лучший игрок</h3>";
-      PageHTML+= "<p>Здесь будет имя лучшего игрока</p>";
       document.getElementById('IPageGame').style.display = 'none';
+      showResult();
       break;
   }
   document.getElementById('IPage').innerHTML = PageHTML;
@@ -61,19 +65,20 @@ function SwitchToState(NewStateH) {
 }
 
 function SwitchToMainPage() {
-  SwitchToState( { pagename:'Main' } );
+  SwitchToState({pagename:'Main'});
 }
 
 function SwitchToLoginPage() {
-  SwitchToState( { pagename:'Login' } );
+  SwitchToState({pagename:'Login'});
 }
 
 function SwitchToGamePage() {
-  SwitchToState( { pagename:'Game' } );
+  SwitchToState({pagename:'Game'});
 }
 
 function SwitchToBestPage() {
-  SwitchToState( { pagename:'Best' } );
+  SwitchToState({pagename:'Best'});
+
 }
 
 // переключаемся в состояние, которое сейчас прописано в закладке УРЛ

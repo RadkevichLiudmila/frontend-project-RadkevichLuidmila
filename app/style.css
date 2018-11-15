@@ -43,3 +43,8 @@ p, h3, h2 {
   position: absolute;
   background: green;
 }
+#gameEnd {
+  font-size : 30px;
+  font-weight : bold;
+  color: red;
+}
