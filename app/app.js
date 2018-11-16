@@ -50,7 +50,7 @@ function SwitchToStateFromURLHash() {
       break;
 
     case 'Best':
-      PageHTML+="<h3>Лучший игрок</h3>";
+      PageHTML+="<h3>TOP-10 лучших игроков</h3>";
       document.getElementById('IPageGame').style.display = 'none';
       showResult();
       break;

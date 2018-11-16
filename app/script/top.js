@@ -28,12 +28,20 @@ function showResult() {
       return  personB.result - personA.result;
     }
     people.sort(sortResult);
+
     let page = `<p>`;
 
-    people.forEach(function(item, i, people) {
+    people.slice(0, 10).forEach(function(item, i, people) {
       page += `${i+1}. ${item.name} -  ${item.result}. <br>`;
     });
     page += `</p>`;
+
+    let resultLocal =JSON.parse(localStorage.getItem('BESTResult')) || [];
+    resultLocal[0] = resultLocal[0] || 'Player';
+    resultLocal[1] = resultLocal[1] || 0;
+
+    page += `<h3>Лучший результат на этом устройстве</h3>`;
+    page += `<p>${resultLocal[0]} - ${resultLocal[1]}</p>`;
 
     let contResult = document.createElement('div');
     contResult.id = 'contResult';
