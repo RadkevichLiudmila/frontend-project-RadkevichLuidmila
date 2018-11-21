@@ -1,7 +1,7 @@
 'use strict';
 window.onhashchange = SwitchToStateFromURLHash;
 
-let SPAStateH = {}; // могут быть элементы pagename и photoid
+let SPAStateH = {}; 
 
 function SwitchToStateFromURLHash() {
   let URLHash = window.location.hash;
@@ -9,12 +9,11 @@ function SwitchToStateFromURLHash() {
   let StateJSON = decodeURIComponent(URLHash.substr(1));
 
   if (StateJSON !== '') {
-    SPAStateH = JSON.parse(StateJSON); // если JSON непустой, читаем из него
-  } else {                                // состояние и отображаем
-    SPAStateH = {pagename:'Main'}; // иначе показываем главную страницу
+    SPAStateH = JSON.parse(StateJSON); 
+  } else {                                
+    SPAStateH = {pagename:'Main'}; 
   }
 
-  // обновляем вариабельную часть страницы под текущее состояние
   let PageHTML = '';
 
   switch ( SPAStateH.pagename ) {
@@ -34,8 +33,7 @@ function SwitchToStateFromURLHash() {
       break;
 
     case 'Login':
-    let namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
-    localStorage.setItem('NamePlayer', JSON.stringify(namePlayer));
+      let namePlayer = storageLocal.getStorage().namePlayer;//getName();
       PageHTML += "<h3>Регистрация игрока</h3>";
       PageHTML += "<p>Введите имя игрока</p>";
       PageHTML += `<input id='namePlayer' value=${namePlayer}></input>`;
@@ -52,7 +50,29 @@ function SwitchToStateFromURLHash() {
     case 'Best':
       PageHTML+="<h3>TOP-10 лучших игроков</h3>";
       document.getElementById('IPageGame').style.display = 'none';
-      showResult();
+      //showResult();
+
+      // выводим список лучших игроков
+      storageAJAX.getValue();
+
+      let people = [];
+      for (let key in storageAJAX.storage) {
+        people.push({name:key, result:storageAJAX.storage[key]});
+      }
+      
+      function sortResult(personA, personB) {
+        return  personB.result - personA.result;
+      }
+      people.sort(sortResult);
+      PageHTML += `<p>`;
+      people.slice(0, 10).forEach(function(item, i, people) {
+        PageHTML += `${i+1}. ${item.name} -  ${item.result}. <br>`;
+      });
+      PageHTML += `</p>`;
+
+      PageHTML += `<h3>Лучший результат на этом устройстве</h3>`;
+      PageHTML += `<p>${storageLocal.getStorage().nameBESTPlayer} - ${storageLocal.getStorage().goalBESTPlayer}</p>`;
+
       break;
   }
   document.getElementById('IPage').innerHTML = PageHTML;

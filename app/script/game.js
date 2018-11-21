@@ -1,8 +1,8 @@
 'use strict';
 const fieldWidth = 600; // ширина игрового поля
 const fieldHeight = 400; // высота игрового поля
-const sizeBall = 20; // размер шарика
-const sizeBlock = 20; // размер блока
+//const sizeBall = 20; // размер шарика
+//const sizeBlock = 20; // размер блока
 let matrixField = []; // матрица поля, для того, чтобы узнать положение объектов
 let mouseX = 0; // переменная следит за положением мыши по оси Х и передает данные шарику
 let mouseY = 0; // переменная следит за положением мыши по оси Y и передает данные шарику
@@ -13,28 +13,8 @@ let timerForBarrier, timerForBonus; //таймеры
 const ClickAudioBonus = new Audio('audio/KoopaTroopaHide.wav');
 const ClickAudioBarrier = new Audio('audio/Creature.wav');
 
-let AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
-let storageAJAX ={};
-let myName = 'Radkevich_project_results';
-
-// забрали данные с сервера
-  $.ajax(
-    {
-      url: AjaxHandlerScript,
-      type: 'POST',
-      data: {f: 'READ', n: myName},
-      cache: false,
-      success: writeReady,
-      error: ErrorHandler
-    }
-  );
-
-// сохранили данные в массив
-function writeReady(Result) {
-  storageAJAX = JSON.parse(Result.result);
-}
-
-
+const storageAJAX = new TAJAXStorage();
+const storageLocal = new TLocalStorage();
 
 let timerForBall =
   // находим, какой requestAnimationFrame доступен
@@ -47,65 +27,6 @@ let timerForBall =
   function (callback) {
       window.setTimeout(callback, 1000 / 60);
   };
-
-createContainer();
-function createContainer() {
-  let container = document.getElementById('IPageGame');
-  container.appendChild(createButton('button', 'новая игра'));
-  container.appendChild(createGoal());
-  container.appendChild(createPlayingField());
-  return container;
-}
-
-function createButton(id, text) {
-  let button = document.createElement('input');
-  button.id = id;
-  button.type = 'button';
-  button.className = 'button';
-  button.value = text;
-  return button;
-}
-
-function createGoal() {
-  let goal = document.createElement('p');
-  goal.id = 'goal';
-  goal.textContent = '0';
-  return goal;
-}
-
-function createPlayingField() {
-  let playingField = document.createElement('div');
-  playingField.id = 'playingField';
-  playingField.appendChild(createElement('ball'));
-  playingField.appendChild(createElement('bonus'));
-  return playingField;
-}
-
-function createElement(name) {
-  let element = document.createElement('div');
-  element.id = name;
-  element.appendChild(createImage(name));
-  return element;
-}
-
-function createImage(name) {
-  let img = document.createElement('img');
-  if (name === 'barrier') {
-    img.src = 'img/block.jpg';
-    img.width = sizeBall;
-    img.height = sizeBall;
-  } else if (name === 'ball') {
-    img.src = 'img/player.png';
-    img.width = sizeBall;
-    img.height = sizeBall;
-  } else {
-    img.src = 'img/treasure.jpg';
-    img.width = sizeBlock;
-    img.height = sizeBlock;
-  }
-
-  return img;
-}
 
 //-----------------------------------------------------------
 let field = {
@@ -123,7 +44,7 @@ let goal = {
   player: 0,
   Update: function () {
     let goal = document.getElementById('goal');
-    const namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
+    const namePlayer = storageLocal.getStorage().namePlayer;
     goal.textContent = namePlayer + '! Вы набрали ' + this.player + ' очков';
   }
 }
@@ -361,67 +282,30 @@ function theEnd() {
 
 function addResultLocalStorage() {
 
-  let namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
-  let bestResult = JSON.parse(localStorage.getItem('BESTResult')) || [namePlayer, 0];
-  localStorage.setItem('NamePlayer', JSON.stringify(namePlayer));
-
-  if (bestResult[1] < goal.player) {
-    bestResult[0] = namePlayer;
-    bestResult[1] = goal.player;
-    localStorage.setItem('BESTResult', JSON.stringify(bestResult));
+  let name = storageLocal.getStorage().namePlayer;
+  let goalLocal = storageLocal.getStorage().goalPlayer;
+  let goalLocalBest = storageLocal.getStorage().goalBESTPlayer;
+  
+  if (goalLocal < goal.player) {
+    storageLocal.setName(name, goal.player);
   }
-
+  
+  if (goalLocalBest < goal.player) {
+    storageLocal.setResultBest(goal.player);
+  }
+  
 }
 
 function addResultAJAXStorage() {
 
-  let namePlayer = JSON.parse(localStorage.getItem('NamePlayer')) || 'Player';
+  let namePlayer = storageLocal.getStorage().namePlayer;
+  let goalPlayer = 0;
 
-  if (!storageAJAX[namePlayer]) {
-    storageAJAX[namePlayer] = 0;
+  if ((storageAJAX.storage[namePlayer] < goal.player) || !storageAJAX.storage[namePlayer]) {
+    goalPlayer = goal.player;
+    storageAJAX.addValue(namePlayer, goalPlayer);
   }
-  if (storageAJAX[namePlayer] < goal.player) {
-    storageAJAX[namePlayer] = goal.player;
-  }
 
-   // подготавливаем сервер к изменениям
-
-    let updatePassword = Math.random();
-    $.ajax({
-      url: AjaxHandlerScript,
-      type: 'POST',
-      data: {
-        f: 'LOCKGET', n: myName,
-        p: updatePassword
-      },
-      cache: false,
-      success: updateServer,
-      error: ErrorHandler
-    });
-
-
-  // посылаем измененный массив на сервер
-
-    function updateServer() {
-    $.ajax({
-      url : AjaxHandlerScript,
-      type : 'POST',
-      data: {f: 'UPDATE', n: myName,
-          v : JSON.stringify(storageAJAX), p: updatePassword},
-      cache: false,
-      success:  function(Result) {
-        console.log(Result);
-      },
-      error: ErrorHandler
-    });
-
-  }
-  console.log (storageAJAX);
-
-}
-
-function ErrorHandler(jqXHR, StatusStr, ErrorStr) {
-  alert(StatusStr + ' ' + ErrorStr);
 }
 
 field.Update();
