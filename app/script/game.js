@@ -16,7 +16,7 @@ const ClickAudioBarrier = new Audio('audio/Creature.wav');
 const storageAJAX = new TAJAXStorage();
 const storageLocal = new TLocalStorage();
 
-let timerForBall =
+const timerForBall =
   // находим, какой requestAnimationFrame доступен
   window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
@@ -29,35 +29,40 @@ let timerForBall =
   };
 
 //-----------------------------------------------------------
-let field = {
-  Width: fieldWidth,
-  Height: fieldHeight,
 
-  Update: function () {
-    let playingField = document.getElementById('playingField');
+class ArenaForPlay {
+  constructor() {
+    this.Width = fieldWidth,
+    this.Height = fieldHeight
+  }
+  Update() {
+    const playingField = document.getElementById('playingField');
     playingField.style.width = this.Width + 'px';
     playingField.style.height = this.Height + 'px';
   }
 }
 
-let goal = {
-  player: 0,
-  Update: function () {
-    let goal = document.getElementById('goal');
+class Goal {
+  constructor(goals) {
+    this.player = goals;
+  }
+  Update() {
+    const goal = document.getElementById('goal');
     const namePlayer = storageLocal.getStorage().namePlayer;
     goal.textContent = namePlayer + '! Вы набрали ' + this.player + ' очков';
   }
 }
 
-function DescriptionOfObject(Width, Height, PosX, PosY, Id) {
-  this.Width = Width;
-  this.Height = Height;
-  this.PosX = PosX;
-  this.PosY = PosY;
-  this.Update = function () {
-    let Obj = document.getElementById(Id);
-    Obj.id = Id;
-    playingField.appendChild(Obj);
+class Ball {
+  constructor(Width, Height, PosX, PosY, Id) {
+    this.Width = Width;
+    this.Height = Height;
+    this.PosX = PosX;
+    this.PosY = PosY;
+    this.Id = Id;
+  }
+  Update() {
+    const Obj = document.getElementById(this.Id);
     Obj.style.width = this.Width + 'px';
     Obj.style.height = this.Height + 'px';
     Obj.style.left = this.PosX + 'px';
@@ -65,19 +70,22 @@ function DescriptionOfObject(Width, Height, PosX, PosY, Id) {
   }
 }
 
-let ball = new DescriptionOfObject(sizeBall, sizeBall, fieldWidth / 2, fieldHeight / 2, 'ball');
-let coordForBonusX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
-let coordForBonusY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
-let bonus = new DescriptionOfObject(sizeBlock, sizeBlock, coordForBonusX, coordForBonusY, 'bonus');
+class Bonus extends Ball {
+  constructor(Width, Height, PosX, PosY, Id) {
+    super(Width, Height, PosX, PosY, Id);
+  }
+  Update() {
+    super.Update();
+  }
+}
 
-let barrier = {
-  Width: sizeBlock,
-  Height: sizeBlock,
-  PosX: 0,
-  PosY: 0,
-  Update: function () {
-    let playingField = document.getElementById('playingField');
-    let barrier = document.createElement('div');
+class Barrier extends Ball {
+  constructor(Width, Height, PosX, PosY, Id) {
+    super(Width, Height, PosX, PosY, Id);
+  }
+  Update() {
+    const playingField = document.getElementById('playingField');
+    const barrier = document.createElement('div');
     barrier.id = 'barrier';
     playingField.appendChild(barrier);
     barrier.style.width = this.Width + 'px';
@@ -87,6 +95,15 @@ let barrier = {
     barrier.appendChild(createImage('barrier'));
   }
 }
+
+const coordForBonusX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
+const coordForBonusY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
+
+const arenaForPlay = new ArenaForPlay(fieldWidth, fieldHeight);
+const goal = new Goal(0);
+const ball = new Ball(sizeBall, sizeBall, fieldWidth / 2, fieldHeight / 2, 'ball');
+const bonus = new Bonus(sizeBlock, sizeBlock, coordForBonusX, coordForBonusY, 'bonus');
+const barrier = new Barrier(sizeBlock, sizeBlock, 0, 0, 'barrier');
 
 //--------------------- нажали на кнопку новая игра ---------------------
 
@@ -121,7 +138,7 @@ function startGame() {
 
 // создаем пустую матрицу, которая следит за положением элементов на поле
 function matrixArray() {
-  let arr = new Array();
+  const arr = new Array();
   for (let i=0; i < fieldHeight / 20; i++) {
     arr[i] = new Array();
     for (let j=0; j < fieldWidth / 20; j++) {
@@ -135,7 +152,7 @@ function matrixArray() {
 function newGameField() {
 
   // удаляем все элементы с поля, кроме главного игрока
-  let playingField = document.getElementById('playingField');
+  const playingField = document.getElementById('playingField');
   for (let i = 0; i < playingField.childNodes.length; i++) {
     if (playingField.childNodes[i].id === 'barrier') {
       playingField.removeChild(playingField.childNodes[i]);
@@ -273,7 +290,7 @@ function stopGame() {
 function theEnd() {
   document.getElementById('playingField').appendChild(createResult());
   function createResult() {
-    let gameEnd = document.createElement('p');
+    const gameEnd = document.createElement('p');
     gameEnd.id = 'gameEnd';
     gameEnd.textContent = 'Вы проиграли!';
     return gameEnd;
@@ -282,9 +299,9 @@ function theEnd() {
 
 function addResultLocalStorage() {
 
-  let name = storageLocal.getStorage().namePlayer;
-  let goalLocal = storageLocal.getStorage().goalPlayer;
-  let goalLocalBest = storageLocal.getStorage().goalBESTPlayer;
+  const name = storageLocal.getStorage().namePlayer;
+  const goalLocal = storageLocal.getStorage().goalPlayer;
+  const goalLocalBest = storageLocal.getStorage().goalBESTPlayer;
   
   if (goalLocal < goal.player) {
     storageLocal.setName(name, goal.player);
@@ -298,16 +315,16 @@ function addResultLocalStorage() {
 
 function addResultAJAXStorage() {
 
-  let namePlayer = storageLocal.getStorage().namePlayer;
-  let goalPlayer = 0;
+  const namePlayer = storageLocal.getStorage().namePlayer;
+ // let goalPlayer = 0;
 
   if ((storageAJAX.storage[namePlayer] < goal.player) || !storageAJAX.storage[namePlayer]) {
-    goalPlayer = goal.player;
-    storageAJAX.addValue(namePlayer, goalPlayer);
+   // goalPlayer = goal.player;
+    storageAJAX.addValue(namePlayer, goal.player);
   }
 
 }
 
-field.Update();
+arenaForPlay.Update();
 ball.Update();
 bonus.Update();

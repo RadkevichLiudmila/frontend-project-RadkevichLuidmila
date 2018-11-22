@@ -1,7 +1,7 @@
 'use strict';
 
 function saveNamePlayer() {
-    let name = document.getElementById('namePlayer').value;
+    const name = document.getElementById('namePlayer').value;
     storageLocal.setName(name, 0);
 }
 

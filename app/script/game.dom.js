@@ -4,7 +4,7 @@ const sizeBlock = 20; // размер блока
 
 createContainer();
 function createContainer() {
-  let container = document.getElementById('IPageGame');
+  const container = document.getElementById('IPageGame');
   container.appendChild(createButton('button', 'новая игра'));
   container.appendChild(createGoal());
   container.appendChild(createPlayingField());
@@ -12,7 +12,7 @@ function createContainer() {
 }
 
 function createButton(id, text) {
-  let button = document.createElement('input');
+  const button = document.createElement('input');
   button.id = id;
   button.type = 'button';
   button.className = 'button';
@@ -21,14 +21,14 @@ function createButton(id, text) {
 }
 
 function createGoal() {
-  let goal = document.createElement('p');
+  const goal = document.createElement('p');
   goal.id = 'goal';
   goal.textContent = '0';
   return goal;
 }
 
 function createPlayingField() {
-  let playingField = document.createElement('div');
+  const playingField = document.createElement('div');
   playingField.id = 'playingField';
   playingField.appendChild(createElement('ball'));
   playingField.appendChild(createElement('bonus'));
@@ -36,14 +36,14 @@ function createPlayingField() {
 }
 
 function createElement(name) {
-  let element = document.createElement('div');
+  const element = document.createElement('div');
   element.id = name;
   element.appendChild(createImage(name));
   return element;
 }
 
 function createImage(name) {
-  let img = document.createElement('img');
+  const img = document.createElement('img');
   if (name === 'barrier') {
     img.src = 'img/block.jpg';
     img.width = sizeBall;

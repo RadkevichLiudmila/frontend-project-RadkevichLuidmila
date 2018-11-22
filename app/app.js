@@ -4,9 +4,9 @@ window.onhashchange = SwitchToStateFromURLHash;
 let SPAStateH = {}; 
 
 function SwitchToStateFromURLHash() {
-  let URLHash = window.location.hash;
+  const URLHash = window.location.hash;
 
-  let StateJSON = decodeURIComponent(URLHash.substr(1));
+  const StateJSON = decodeURIComponent(URLHash.substr(1));
 
   if (StateJSON !== '') {
     SPAStateH = JSON.parse(StateJSON); 
@@ -33,7 +33,7 @@ function SwitchToStateFromURLHash() {
       break;
 
     case 'Login':
-      let namePlayer = storageLocal.getStorage().namePlayer;//getName();
+    const namePlayer = storageLocal.getStorage().namePlayer;
       PageHTML += "<h3>Регистрация игрока</h3>";
       PageHTML += "<p>Введите имя игрока</p>";
       PageHTML += `<input id='namePlayer' value=${namePlayer}></input>`;
@@ -53,9 +53,9 @@ function SwitchToStateFromURLHash() {
       //showResult();
 
       // выводим список лучших игроков
-      storageAJAX.getValue();
+      //storageAJAX.getValue();
 
-      let people = [];
+      const people = [];
       for (let key in storageAJAX.storage) {
         people.push({name:key, result:storageAJAX.storage[key]});
       }
@@ -65,7 +65,7 @@ function SwitchToStateFromURLHash() {
       }
       people.sort(sortResult);
       PageHTML += `<p>`;
-      people.slice(0, 10).forEach(function(item, i, people) {
+      people.slice(0, 10).forEach(function(item, i) {
         PageHTML += `${i+1}. ${item.name} -  ${item.result}. <br>`;
       });
       PageHTML += `</p>`;

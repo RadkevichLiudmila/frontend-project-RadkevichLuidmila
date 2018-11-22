@@ -1,74 +1,57 @@
 'use strict';
+const AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
+const myName = 'Radkevich_project_results';
 
 function TAJAXStorage() {
+  this.storage = {};
+  this.getValue();
+}
+
+TAJAXStorage.prototype.getValue = function() {
   const self = this;
-  self.storage = {};
-
-  const AjaxHandlerScript = "http://fe.it-academy.by/AjaxStringStorage2.php";
-  const myName = 'Radkevich_project_results';
-
-  // забрали данные с сервера
-  $.ajax(
-    {
-      url: AjaxHandlerScript,
-      type: 'POST',
-      data: {f: 'READ', n: myName},
-      cache: false,
-      success: (Result) => {
-        self.storage = JSON.parse(Result.result);
-        console.log(self.storage);
-      },
-      error: ErrorHandler
-    }
-  );
-
-  self.addValue = function(key, value) {
-    self.storage[key] = value;
-    console.log(self.storage);
-    // подготавливаем сервер к изменениям
-    let updatePassword = Math.random();
-    $.ajax({
+  $.ajax({
       url: AjaxHandlerScript,
       type: 'POST',
       data: {
-        f: 'LOCKGET', n: myName,
-        p: updatePassword
+        f: 'READ', 
+        n: myName
       },
       cache: false,
-      success: updateServer,
-      error: ErrorHandler
-    });
+      success: (Result) => self.storage = JSON.parse(Result.result),
+      error: self.errorHandler
+  });
+}
 
-    // посылаем измененный массив на сервер
-    function updateServer() {
+TAJAXStorage.prototype.addValue = function(key, value) {
+  const self = this;  
+  self.storage[key] = value;
+  const updatePassword = Math.random();
+  $.ajax({
+    url: AjaxHandlerScript,
+    type: 'POST',
+    data: {
+      f: 'LOCKGET',
+      n: myName,
+      p: updatePassword
+    },
+    cache: false,
+    success: function () {
       $.ajax({
         url : AjaxHandlerScript,
         type : 'POST',
-        data: {f: 'UPDATE', n: myName,
-            v : JSON.stringify(self.storage), p: updatePassword},
-        cache: false,
-        success: function () {
-          console.log('success');
-        },//(Result) => {console.log(Result.result)},*/
-        error: ErrorHandler
-      });
-    }
-  }
+        data: {
+          f: 'UPDATE',
+          n: myName,
+          v : JSON.stringify(self.storage),
+          p: updatePassword
+        },
+        error: self.errorHandler
+      })
+    },
+    error: self.errorHandler
+  });
+}
 
-  self.getValue = function() {
-    $.ajax(
-      {
-        url: AjaxHandlerScript,
-        type: 'POST',
-        data: {f: 'READ', n: myName},
-        cache: false,
-        success: (Result) => self.storage = JSON.parse(Result.result),
-        error: ErrorHandler
-      }
-    );
-  }
-
- function ErrorHandler(jqXHR, StatusStr, ErrorStr) {
-    alert(StatusStr + ' ' + ErrorStr);
-  }
+TAJAXStorage.prototype.errorHandler = function () {
+  console.log('Ошибка сети!');
 }
