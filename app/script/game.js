@@ -1,6 +1,6 @@
 'use strict';
-const fieldWidth = 600; // ширина игрового поля
-const fieldHeight = 400; // высота игрового поля
+//const fieldWidth = 600; // ширина игрового поля
+//const fieldHeight = 400; // высота игрового поля
 //const sizeBall = 20; // размер шарика
 //const sizeBlock = 20; // размер блока
 let matrixField = []; // матрица поля, для того, чтобы узнать положение объектов
@@ -29,7 +29,7 @@ const timerForBall =
   };
 
 //-----------------------------------------------------------
-
+/*
 class ArenaForPlay {
   constructor() {
     this.Width = fieldWidth,
@@ -41,7 +41,8 @@ class ArenaForPlay {
     playingField.style.height = this.Height + 'px';
   }
 }
-
+*/
+/*
 class Goal {
   constructor(goals) {
     this.player = goals;
@@ -51,8 +52,8 @@ class Goal {
     const namePlayer = storageLocal.getStorage().namePlayer;
     goal.textContent = namePlayer + '! Вы набрали ' + this.player + ' очков';
   }
-}
-
+}*/
+/*
 class Ball {
   constructor(Width, Height, PosX, PosY, Id) {
     this.Width = Width;
@@ -61,15 +62,17 @@ class Ball {
     this.PosY = PosY;
     this.Id = Id;
   }
-  Update() {
+}
+//.prototype.getValue = function() {
+Ball.prototype.Update = function() {
     const Obj = document.getElementById(this.Id);
     Obj.style.width = this.Width + 'px';
     Obj.style.height = this.Height + 'px';
     Obj.style.left = this.PosX + 'px';
     Obj.style.top = this.PosY + 'px';
   }
-}
-
+*/
+/*
 class Bonus extends Ball {
   constructor(Width, Height, PosX, PosY, Id) {
     super(Width, Height, PosX, PosY, Id);
@@ -95,18 +98,19 @@ class Barrier extends Ball {
     barrier.appendChild(createImage('barrier'));
   }
 }
-
+*/
+/*
 const coordForBonusX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
 const coordForBonusY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
 
-const arenaForPlay = new ArenaForPlay(fieldWidth, fieldHeight);
-const goal = new Goal(0);
-const ball = new Ball(sizeBall, sizeBall, fieldWidth / 2, fieldHeight / 2, 'ball');
+//const arenaForPlay = new ArenaForPlay(fieldWidth, fieldHeight);
+//const goal = new Goal(0);
+//const ball = new Ball(sizeBall, sizeBall, fieldWidth / 2, fieldHeight / 2, 'ball');
 const bonus = new Bonus(sizeBlock, sizeBlock, coordForBonusX, coordForBonusY, 'bonus');
 const barrier = new Barrier(sizeBlock, sizeBlock, 0, 0, 'barrier');
-
+*/
 //--------------------- нажали на кнопку новая игра ---------------------
-
+/*
 document.getElementById('button').addEventListener('click', function () {
   document.getElementById('playingField').appendChild(createButton('go', 'поехали'));
   document.getElementById('go').addEventListener('click', startGame, false);
@@ -134,8 +138,8 @@ function startGame() {
   PlanNextTick();
   timerForBarrier = setTimeout(createBarrier, 3000);
   timerForBonus = setTimeout(deleteBonus, 3000);
-}
-
+}*/
+/*
 // создаем пустую матрицу, которая следит за положением элементов на поле
 function matrixArray() {
   const arr = new Array();
@@ -147,7 +151,7 @@ function matrixArray() {
   }
   arr[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 2;
   return arr;
-}
+}*/
 // обновляет поле при запуске игры
 function newGameField() {
 
@@ -254,8 +258,8 @@ function deleteBonus() {
 
 //создаем бонус
 function createBonus() {
-  let coordX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
-  let coordY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
+  const coordX = Math.floor(Math.random() * ((fieldWidth - sizeBlock) / sizeBlock)) * sizeBlock;
+  const coordY = Math.floor(Math.random() * ((fieldHeight - sizeBlock) / sizeBlock)) * sizeBlock;
   if (matrixField[coordY / sizeBlock][coordX / sizeBlock] === 1) {
     createBonus();
   } else {
@@ -325,6 +329,6 @@ function addResultAJAXStorage() {
 
 }
 
-arenaForPlay.Update();
-ball.Update();
-bonus.Update();
+//arenaForPlay.Update();
+//ball.Update();
+//bonus.Update();
