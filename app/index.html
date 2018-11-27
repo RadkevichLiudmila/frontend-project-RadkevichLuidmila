@@ -8,24 +8,32 @@
 
 </head>
 <body>
+<input type=button class=button value='Главная' onclick='SwitchToMainPage()'>
+<input type=button class=button value='Правила игры' onclick='SwitchToRegulationsPage()'>
+<input type=button class=button value='Игра' onclick='SwitchToGamePage()'>
+<input type=button class=button value='Результаты' onclick='SwitchToBestPage()'>
 
-    <div id='IPage'></div>
-    <div id='IPageGame'></div>
+<div id='iPage'></div>
+<div id='iPageGame'></div>
 
-    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="script/AJAXstorage.js"></script>
-    <script src="script/localStorage.js"></script>
-    <script src="app.js" id="app"></script>
-    <script src="script/registration.js"></script>
-    <script src="script/game.dom.js"></script>
-    <script src="script/game.js"></script>
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css"/>
 
-    <br>
 
-    <input type=button class=button value='Главная' onclick='SwitchToMainPage()'>
-    <input type=button class=button value='Регистрация' onclick='SwitchToLoginPage()'>
-    <input type=button class=button value='Игра' onclick='SwitchToGamePage()'>
-    <input type=button class=button value='Результаты' onclick='SwitchToBestPage()'>
+<script src="script/ajaxStorage.js"></script>
+<script src="script/localStorage.js"></script>
+<script src="script/helpers.js"></script>
+<script src="script/registration.js"></script>
+<script src="script/arena.js"></script>
+<script src="script/goal.js"></script>
+<script src="script/player.js"></script>
+<script src="script/bonus.js"></script>
+<script src="script/barrier.js"></script>
+<script src="script/gameDom.js"></script>
+<script src="script/game.js"></script>
+<script src="spa.js"></script>
+<br>
 
 </body>
 </html>
