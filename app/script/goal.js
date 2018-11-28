@@ -7,7 +7,6 @@ class Goal {
 
   Update() {
     const goal = document.getElementById('goal');
-    const namePlayer = storageLocal.getStorage().namePlayer;
     goal.textContent = `Вы набрали ${this.gameGoal} очков`;
   }
 }

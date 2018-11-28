@@ -63,7 +63,7 @@ function createButton(id, text) {
 }
 
 function createModalWindow() {
-  const modal = document.createElement('div');
+  const modal = document.createElement('form');
   modal.id = 'modalWindow';
   modal.title = 'Сохранить результат?';
   modal.appendChild(createInput('namePlayer', 'Player'));
@@ -75,7 +75,9 @@ function createModalWindow() {
 function createInput(id, name) {
   const input = document.createElement('input');
   input.id = id;
+  input.className = id;
   input.value = name;
+  input.setAttribute('autocomplete', 'off');
   return input;
 }
 

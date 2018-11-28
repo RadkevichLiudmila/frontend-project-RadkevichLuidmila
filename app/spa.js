@@ -48,10 +48,11 @@ function SwitchToStateFromURLHash() {
 
       // выводим список лучших игроков
       const people = [];
-      for (let key in storageAJAX.storage) {
+      const storage = storageResultAJAX.getValue();
+      for (let key in storage) {
         people.push({
           name: key,
-          result: storageAJAX.storage[key]
+          result: storage[key]
         });
       }
       people.sort(sortResult);
@@ -64,7 +65,7 @@ function SwitchToStateFromURLHash() {
       PageHTML += `</p>`;
 
       PageHTML += `<h3>Лучший результат на этом устройстве</h3>
-      <p>${storageLocal.getStorage().nameBESTPlayer} - ${storageLocal.getStorage().goalBESTPlayer}</p>`;
+      <p>${storageResultLocal.getStorage().nameBESTPlayer} - ${storageResultLocal.getStorage().goalBESTPlayer}</p>`;
       break;
   }
   document.getElementById('iPage').innerHTML = PageHTML;

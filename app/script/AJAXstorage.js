@@ -1,58 +1,78 @@
 'use strict';
-const AjaxHandlerScript = 'http://fe.it-academy.by/AjaxStringStorage2.php';
-const myName = 'Radkevich_project_results';
 
-function TAJAXStorage() {
-  // const AjaxHandlerScript = link;
-  this.storage = {};
-  this.getValue();
+class TAJAXStorage {
+  constructor(ajaxHandlerScript, name) {
+    this.storage = {};
+    this.link = ajaxHandlerScript;
+    this.name = name;
+    this.getValue();
 }
 
-TAJAXStorage.prototype.getValue = function () {
+getValue() {
   const self = this;
   $.ajax({
-    url: AjaxHandlerScript,
+    url: self.link,
     type: 'POST',
     data: {
       f: 'READ',
-      n: myName
+      n: self.name
     },
     cache: false,
-    success: (Result) => self.storage = JSON.parse(Result.result),
+    success: (Result) => {
+      if (Result.result) {
+        self.storage = JSON.parse(Result.result);
+      } else {
+        self.storage = {};
+      }
+    },
     error: self.errorHandler
   });
+  return self.storage;
 };
 
-TAJAXStorage.prototype.addValue = function (key, value) {
+addValue(key, value) { 
   const self = this;
   self.storage[key] = value;
+  console.log('1--------');
+  console.log( self.storage);  // 1
+  self.updateStorage();
+};
+
+updateStorage() {
+  const self = this;
+  console.log('2--------');
+  console.log( self.storage);// 2
   const updatePassword = Math.random();
   $.ajax({
-    url: AjaxHandlerScript,
+    url: self.link,
     type: 'POST',
     data: {
       f: 'LOCKGET',
-      n: myName,
-      p: updatePassword
+      p: updatePassword,
+      n: self.name
     },
     cache: false,
     success: function () {
+      console.log('3--------');
+      console.log( self.storage); // 3
       $.ajax({
-        url: AjaxHandlerScript,
+        url: self.link,
         type: 'POST',
         data: {
           f: 'UPDATE',
-          n: myName,
-          v: JSON.stringify(self.storage),
-          p: updatePassword
+          n: self.name,
+          p: updatePassword,
+          v: JSON.stringify(self.storage)
         },
+        cache: false,
         error: self.errorHandler
       });
     },
     error: self.errorHandler
-  });
+  })
 };
 
-TAJAXStorage.prototype.errorHandler = function () {
-  console.log('Ошибка сети!');
+errorHandler(error) {
+  console.log('Ошибка: ' + error);
 };
+}

@@ -8,8 +8,8 @@ let timerForBarrier, timerForBonus; //таймеры
 const clickAudioBonus = new Audio('audio/koopaTroopaHide.wav');
 const clickAudioBarrier = new Audio('audio/creature.wav');
 
-const storageAJAX = new TAJAXStorage();
-const storageLocal = new TLocalStorage();
+const storageResultLocal = new TLocalStorage();
+const storageResultAJAX = new TAJAXStorage('http://fe.it-academy.by/AjaxStringStorage2.php','Radkevich_project_results');
 
 const timerForBall =
   // находим, какой requestAnimationFrame доступен
@@ -178,7 +178,7 @@ function stopGame() {
   theEnd();
   openMyWidget();
 }
-
+//-----------------------------------------------------
 $('#modalWindow')
   .dialog({
     autoOpen: false, // окно создаётся скрытым
@@ -197,39 +197,73 @@ function openMyWidget() {
 }
 
 function safeResult() {
-  $('#modalWindow')
-    .dialog('close');
+  //$('#modalWindow').dialog('close');
+ //   validNamePlayer();
   addResultLocalStorage();
   addResultAJAXStorage();
+  $('#modalWindow').dialog('close');
 }
 
 function noSafeResult() {
-  $('#modalWindow')
-    .dialog('close');
+  $('#modalWindow').dialog('close');
 }
+//--------------------------------------------------------
+/*
+function validNamePlayer() {
+function RussianNameValidation(value, elem, args) {
+  // value - что введено в поле, args - что задано аргументом правила валидации, т.е. 20
+  // 1. текст не должен быть слишком длинным
+  console.log(value);
+
+  console.log(args);
+  if (value.length >= args)
+    return false;
+  // 2. должно состоять из большой русской буквы и множества маленьких
+  return /^[А-ЯЁ][а-яё]+$/.test(value);
+}
+
+$.validator.addMethod('russian_name', RussianNameValidation,
+  'Требуется русское имя');
+
+$('#modalWindow').validate({
+  rules:
+    {
+      namePlayer: {required: true, russian_name: 20},
+    },
+  messages:
+    {
+      namePlayer:
+        {
+          required: 'Имя придётся указать!',
+          russian_name: 'Введите нормальное имя!'
+        }
+    }
+});
+}*/
+//-------------------------------------------
 
 function addResultLocalStorage() {
 
   const name = document.getElementById('namePlayer').value;
-  const goalLocal = storageLocal.getStorage().goalPlayer;
-  const goalLocalBest = storageLocal.getStorage().goalBESTPlayer;
+  const goalLocal = storageResultLocal.getStorage().goalPlayer;
+  const goalLocalBest = storageResultLocal.getStorage().goalBESTPlayer;
 
-  if (goalLocal < goal.gameGoal || name !== storageLocal.getStorage().namePlayer) {
-    storageLocal.setName(name, goal.gameGoal);
+  if (goalLocal < goal.gameGoal || name !== storageResultLocal.getStorage().namePlayer) {
+    storageResultLocal.setName(name, goal.gameGoal);
   }
 
   if (goalLocalBest < goal.gameGoal) {
-    storageLocal.setResultBest(goal.gameGoal);
+    storageResultLocal.setResultBest(goal.gameGoal);
   }
 
 }
-
+//---------------------------------------------
 function addResultAJAXStorage() {
 
-  const namePlayer = storageLocal.getStorage().namePlayer;
-
-  if ((storageAJAX.storage[namePlayer] < goal.gameGoal) || !storageAJAX.storage[namePlayer]) {
-    storageAJAX.addValue(namePlayer, goal.gameGoal);
+  const namePlayerLoc = storageResultLocal.getStorage().namePlayer;
+  const storage = storageResultAJAX.getValue();
+  if ((storage[namePlayerLoc] < goal.gameGoal) || !storage[namePlayerLoc]) {
+    storageResultAJAX.addValue(namePlayerLoc, goal.gameGoal);
   }
 
 }
