@@ -26,42 +26,56 @@ const timerForBall =
 document.getElementById('ball').style.display = 'none';
 document.getElementById('bonus').style.display = 'none';
 
-document.getElementById('go')
+ document.getElementById('go')
   .addEventListener('click', startGame, false);
 
 //----------- нажали на кнопку новая игра -------------------
 function startGame() {
   matrixField = matrixArray();
   newGameField();
-  updateGame();
 
   document.getElementById('go').style.display = 'none';
   if (document.getElementById('gameEnd') !== null) {
     document.getElementById('gameEnd')
       .remove();
   }
+
   document.getElementById('ball').style.display = 'block';
   document.getElementById('bonus').style.display = 'block';
-
   document.body.style.cursor = 'none';
+
+
+  document.getElementById('ball').addEventListener('touchstart', touchStart, false);
+
   distanceMouseForBallX = sizeBall / 2 + document.getElementById('playingField').offsetLeft;
   distanceMouseForBallY = sizeBall / 2 + document.getElementById('playingField').offsetTop;
   mouseX = event.clientX - distanceMouseForBallX;
   mouseY = event.clientY - distanceMouseForBallY;
 
   document.body.addEventListener('mousemove', dragMove, false);
-
+  
   // запускаем таймеры
   PlanNextTick();
   timerForBarrier = setTimeout(createBarrier, 3000);
   timerForBonus = setTimeout(deleteBonus, 3000);
 }
 
-function updateGame() {
-  clearTimeout(timerForBarrier);
-  clearTimeout(timerForBonus);
-  document.body.removeEventListener('mousemove', dragMove, false);
-  document.body.style.cursor = 'auto';
+// отслеживаем движение курсора
+function dragMove(event) {
+  event = event || window.event;
+  mouseX = event.clientX - distanceMouseForBallX;
+  mouseY = event.clientY - distanceMouseForBallY;
+}
+
+// отслеживаем движение пальца
+function touchStart() {
+  document.getElementById('ball').addEventListener('touchmove', touchMove, false);
+}
+
+function touchMove(event) {
+event = event || window.event;
+mouseX = event.touches[0].clientX - distanceMouseForBallX;
+mouseY = event.touches[0].clientY - distanceMouseForBallY;
 }
 
 function PlanNextTick() {
@@ -90,9 +104,10 @@ function moveBall() {
     checkMoveGame = false;
   }
 
-  // проставляем координаты для игрока
-  player.PosX = mouseX;
-  player.PosY = mouseY;
+    // проставляем координаты для игрока
+    player.PosX = mouseX;
+    player.PosY = mouseY;
+   
 
   // проверяем координаты игрока
   if (player.PosX <= 0 || player.PosX >= arenaForPlay.Width - sizeBall || player.PosY <= 0 || player.PosY >= arenaForPlay.Height - sizeBall) {
@@ -131,13 +146,6 @@ function moveBall() {
   player.Update();
 }
 
-// отслеживаем движение курсора
-function dragMove(event) {
-  event = event || window.event;
-  mouseX = event.clientX - distanceMouseForBallX;
-  mouseY = event.clientY - distanceMouseForBallY;
-}
-
 // перемещаем бонус, который уже пойман
 function deleteBonus() {
   matrixField[bonus.PosY / sizeBlock][bonus.PosX / sizeBlock] = 0;
@@ -173,99 +181,11 @@ function stopGame() {
   clearTimeout(timerForBarrier);
   clearTimeout(timerForBonus);
   document.body.removeEventListener('mousemove', dragMove, false);
+ // document.getElementById('ball').removeEventListener('touchend', touchStop, false);
   document.getElementById('go').style.display = 'block';
   document.body.style.cursor = 'auto';
   theEnd();
   openMyWidget();
-}
-//-----------------------------------------------------
-$('#modalWindow')
-  .dialog({
-    autoOpen: false, // окно создаётся скрытым
-    modal: true, // модальное окно
-    draggable: false, // не перетаскивать
-    resizable: false, // не менять размер
-  });
-
-function openMyWidget() {
-  $('#modalWindow')
-    .dialog('open');
-  $('#modalWindow')
-    .dialog({
-      title: `Вы набрали ${goal.gameGoal} очков` // переопределяем заголовок
-    });
-}
-
-function safeResult() {
-  //$('#modalWindow').dialog('close');
- //   validNamePlayer();
-  addResultLocalStorage();
-  addResultAJAXStorage();
-  $('#modalWindow').dialog('close');
-}
-
-function noSafeResult() {
-  $('#modalWindow').dialog('close');
-}
-//--------------------------------------------------------
-/*
-function validNamePlayer() {
-function RussianNameValidation(value, elem, args) {
-  // value - что введено в поле, args - что задано аргументом правила валидации, т.е. 20
-  // 1. текст не должен быть слишком длинным
-  console.log(value);
-
-  console.log(args);
-  if (value.length >= args)
-    return false;
-  // 2. должно состоять из большой русской буквы и множества маленьких
-  return /^[А-ЯЁ][а-яё]+$/.test(value);
-}
-
-$.validator.addMethod('russian_name', RussianNameValidation,
-  'Требуется русское имя');
-
-$('#modalWindow').validate({
-  rules:
-    {
-      namePlayer: {required: true, russian_name: 20},
-    },
-  messages:
-    {
-      namePlayer:
-        {
-          required: 'Имя придётся указать!',
-          russian_name: 'Введите нормальное имя!'
-        }
-    }
-});
-}*/
-//-------------------------------------------
-
-function addResultLocalStorage() {
-
-  const name = document.getElementById('namePlayer').value;
-  const goalLocal = storageResultLocal.getStorage().goalPlayer;
-  const goalLocalBest = storageResultLocal.getStorage().goalBESTPlayer;
-
-  if (goalLocal < goal.gameGoal || name !== storageResultLocal.getStorage().namePlayer) {
-    storageResultLocal.setName(name, goal.gameGoal);
-  }
-
-  if (goalLocalBest < goal.gameGoal) {
-    storageResultLocal.setResultBest(goal.gameGoal);
-  }
-
-}
-//---------------------------------------------
-function addResultAJAXStorage() {
-
-  const namePlayerLoc = storageResultLocal.getStorage().namePlayer;
-  const storage = storageResultAJAX.getValue();
-  if ((storage[namePlayerLoc] < goal.gameGoal) || !storage[namePlayerLoc]) {
-    storageResultAJAX.addValue(namePlayerLoc, goal.gameGoal);
-  }
-
 }
 
 arenaForPlay.Update();

@@ -13,4 +13,4 @@ class ArenaForPlay {
   }
 }
 
-const arenaForPlay = new ArenaForPlay(750, 500);
+const arenaForPlay = new ArenaForPlay(900, 600);

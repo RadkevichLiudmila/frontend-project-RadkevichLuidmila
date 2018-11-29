@@ -1,6 +1,6 @@
 'use strict';
 
-const sizeBall = 25;
+const sizeBall = 30;
 
 class Player {
   constructor(Size, PosX, PosY, Id) {
