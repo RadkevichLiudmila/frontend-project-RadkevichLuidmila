@@ -3,13 +3,22 @@
   margin-left: auto;
   margin-right: auto;
 }
-.button {
+.button.new {
   margin: 10px;
   padding: 10px;
   background: #76b1f5;
   border: #3172bb;
   border-radius: 5%;
+  cursor: pointer;
+  width: 150px;
+  height: 50px;
+  color: white;
 }
+.button.hover {
+  background: #91ccf6;
+  border: #72a9e7;
+}
+
 #go {
   position: absolute;
   top: 50%;

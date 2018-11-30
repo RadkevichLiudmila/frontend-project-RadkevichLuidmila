@@ -1,7 +1,6 @@
 'use strict';
 
-$('#modalWindow')
-  .dialog({
+$('#modalWindow').dialog({
     autoOpen: false, // окно создаётся скрытым
     modal: true, // модальное окно
     draggable: false, // не перетаскивать
