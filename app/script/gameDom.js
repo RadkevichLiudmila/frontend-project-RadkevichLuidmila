@@ -24,6 +24,7 @@ function createPlayingField() {
   playingField.appendChild(createElement('bonus'));
   playingField.appendChild(createButton('go', 'новая игра'));
   playingField.appendChild(createModalWindow());
+  playingField.appendChild(createProgressShow());
   return playingField;
 }
 
@@ -70,6 +71,15 @@ function createModalWindow() {
   modal.appendChild(createButtonModal('Сохранить', 'safeResult()'));
   modal.appendChild(createButtonModal('Отмена', 'noSafeResult()'));
   return modal;
+}
+
+function createProgressShow() {
+  const progress = document.createElement('canvas');
+  progress.id = 'canvas';
+  progress.style.display = 'none';
+  progress.style.width = '210';
+  progress.style.height = '210';
+  return progress;
 }
 
 function createInput(id, name) {

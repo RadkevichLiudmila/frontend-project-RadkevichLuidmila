@@ -5,6 +5,7 @@ class TAJAXStorage {
     this.storage = {};
     this.link = ajaxHandlerScript;
     this.name = name;
+    this.timerProgress = 0;
     this.getValue();
 }
 
@@ -18,9 +19,9 @@ getValue() {
       n: self.name
     },
     cache: false,
-    success: (Result) => {
-      if (Result.result) {
-        self.storage = JSON.parse(Result.result);
+    success: (data) => {
+      if (data.result) {
+        self.storage = JSON.parse(data.result);
       } else {
         self.storage = {};
       }
@@ -32,17 +33,8 @@ getValue() {
 
 addValue(key, value) { 
   const self = this;
-  self.storage[key] = value;
-  console.log('1--------');
-  console.log( self.storage);  // 1
-  self.updateStorage();
-};
-
-updateStorage() {
-  const self = this;
-  console.log('2--------');
-  console.log( self.storage);// 2
   const updatePassword = Math.random();
+
   $.ajax({
     url: self.link,
     type: 'POST',
@@ -52,9 +44,10 @@ updateStorage() {
       n: self.name
     },
     cache: false,
-    success: function () {
-      console.log('3--------');
-      console.log( self.storage); // 3
+    success: function (data) {
+      self.storage = JSON.parse(data.result);
+      self.storage[key] = value;
+      
       $.ajax({
         url: self.link,
         type: 'POST',
@@ -65,14 +58,28 @@ updateStorage() {
           v: JSON.stringify(self.storage)
         },
         cache: false,
+        complete: self.complete,
         error: self.errorHandler
       });
     },
-    error: self.errorHandler
+    error: self.errorHandler,
+    xhrFields: {onprogress: self.progress}
   })
 };
 
-errorHandler(error) {
-  console.log('Ошибка: ' + error);
-};
+  errorHandler(error) {
+    console.log('Ошибка: ' + error);
+  };
+
+  progress(EO) {
+    if (EO.lengthComputable) {
+    document.getElementById('canvas').style.display = 'block';
+    this.timerProgress = setInterval(showCanvas, 1000 / 60);
+    }
+  }
+
+  complete() {
+    document.getElementById('canvas').style.display = "none";
+    clearInterval(this.timerProgress);
+  }
 }

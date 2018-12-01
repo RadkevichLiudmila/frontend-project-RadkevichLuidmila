@@ -1,4 +1,4 @@
-#button, #playingField, #IPage input {
+#button, #playingField, #iPage input {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -20,6 +20,18 @@
 }
 
 #go {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+#canvas {
+  padding: 0;
+  margin: 0;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -27,15 +39,16 @@
   transform: translate(-50%, -50%);
 }
 p, h3, h2 {
- /* font-size: 24px;
-  font-weight: bold;*/
   text-align: center;
 }
+
+
 #playingField {
   position: relative;
   border: 1px solid  black;
   background: #F4F4F4;
 }
+
 #ball {
   border-radius: 50%;
   position: absolute;

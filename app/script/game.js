@@ -11,7 +11,7 @@ const clickAudioBarrier = new Audio('audio/creature.wav');
 const storageResultLocal = new TLocalStorage();
 const storageResultAJAX = new TAJAXStorage('http://fe.it-academy.by/AjaxStringStorage2.php','Radkevich_project_results');
 
-const timerForBall =
+const requestAnimatFrame =
   // находим, какой requestAnimationFrame доступен
   window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
@@ -79,7 +79,7 @@ mouseY = event.touches[0].clientY - distanceMouseForBallY;
 }
 
 function PlanNextTick() {
-  timerForBall(moveBall);
+  requestAnimatFrame(moveBall);
 }
 
 // движение игрока
