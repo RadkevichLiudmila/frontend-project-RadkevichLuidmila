@@ -19,31 +19,53 @@ function SwitchToStateFromURLHash() {
   switch (SPAStateH.pagename) {
 
     case 'Main':
+
+      const colorPlayer = document.getElementById('ball').className || 'red';
       PageHTML += `<h2>Добро пожаловать на наш сайт!</h2>
-      <p>Здесь вы можете найти увлекательную игру. Листайте дальше и вы увидите игру 'собиратель сокровищ'</p>`;
+      <p>Выберете цвет игрока:</p>
+      <div class="block">
+      <div id='red' class='ballShow class-margin red'>
+      <img class='imgShow' src="img/player.png">
+      </div>
+      <div id='yellow' class='ballShow class-margin yellow'>
+      <img class='imgShow' src='img/player.png'>
+      </div>
+      <div id='green' class='ballShow class-margin green'>
+      <img class='imgShow' src='img/player.png'>
+      </div>
+      <div id='blue' class='ballShow class-margin blue'>
+      <img class='imgShow' src='img/player.png'>
+      </div>
+      <p>Цвет игрока - ${findColor(colorPlayer)}</p>
+      </div>`;
 
       document.getElementById('iPageGame').style.display = 'none';
-      break;
+
+    break;
+
     case 'Regulations':
       PageHTML += `<h2>Правила игры.</h2>
       <p>Нажать на кнопку 'новая игра'. ` +
-        `На игровом поле появится кнопка 'поехали'. ` +
-        `После ее нажатия на игровом поле появися шарик, ` +
-        `который двигается за компьютерной мышкой. ` +
-        `Спустя каждые 3 секунды на поле появляются препятствия и бонусы. ` +
-        `При столкновении со стеной или препятствием игра заканчивается. ` +
-        `Цель собрать как можно больше бонусов.</p>`;
+      `На игровом поле появится кнопка 'поехали'. ` +
+      `После ее нажатия на игровом поле появися шарик, ` +
+      `который двигается за компьютерной мышкой. ` +
+      `Спустя каждые 3 секунды на поле появляются препятствия и бонусы. ` +
+      `При столкновении со стеной или препятствием игра заканчивается. ` +
+      `Цель собрать как можно больше бонусов.</p>`;
 
       document.getElementById('iPageGame').style.display = 'none';
-      break;
+    break;
 
     case 'Game':
-      PageHTML += `<h3>Собиратель сокровищ</h3>`;
+
+      PageHTML += `<h2>Собиратель сокровищ</h2>`;
       document.getElementById('iPageGame').style.display = 'block';
-      break;
+    
+    break;
 
     case 'Best':
-      PageHTML += `<h3>TOP-10 лучших игроков</h3>`;
+
+      PageHTML += `<h2>TOP-10 лучших игроков</h2>`;
       document.getElementById('iPageGame').style.display = 'none';
 
       // выводим список лучших игроков
@@ -64,10 +86,11 @@ function SwitchToStateFromURLHash() {
         });
       PageHTML += `</p>`;
 
-      PageHTML += `<h3>Лучший результат на этом устройстве</h3>
+      PageHTML += `<h2>Лучший результат на этом устройстве</h2>
       <p>${storageResultLocal.getStorage().nameBESTPlayer} - ${storageResultLocal.getStorage().goalBESTPlayer}</p>`;
-      break;
+    break;
   }
+  
   document.getElementById('iPage').innerHTML = PageHTML;
 }
 

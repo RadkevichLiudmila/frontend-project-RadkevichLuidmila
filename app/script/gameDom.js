@@ -6,7 +6,6 @@ function createContainer() {
   const container = document.getElementById('iPageGame');
   container.appendChild(createGoal());
   container.appendChild(createPlayingField());
-  // container.appendChild(createButton('go', 'новая игра'));
   return container;
 }
 

@@ -19,7 +19,31 @@
   border: #72a9e7;
 }
 
-#go {
+.ballShow, .imgShow {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  float: left;
+  cursor: pointer;
+}
+.class-margin {
+  margin: 20px;
+}
+.red {
+  background: red;
+}
+.yellow {
+  background: yellow;
+}
+.green {
+  background: green;
+}
+.blue {
+  background: blue;
+}
+
+
+#go, .block {
   padding: 0;
   margin: 0;
   position: absolute;
@@ -38,8 +62,11 @@
   margin-right: -50%;
   transform: translate(-50%, -50%);
 }
-p, h3, h2 {
+p, h2 {
   text-align: center;
+}
+p {
+  font-size: 22px;
 }
 
 
@@ -52,10 +79,6 @@ p, h3, h2 {
 #ball {
   border-radius: 50%;
   position: absolute;
-  background: #F0463A;
-  /* margin:-15px 0 0 -15px;
-  transition: top 0.5s, left 0.5s;
-  -webkit-transition: top 0.5s, left 0.5s; */
 }
 #barrier {
   position: absolute;

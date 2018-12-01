@@ -4,11 +4,15 @@
 
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css"/>
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js"></script>
     <title>Собиратель сокровищ</title>
 
 </head>
 <body>
-<input type=button class='button disable' value='Главная' onclick='SwitchToMainPage()'>
+<input type=button class='button disable first-button' value='Главная' onclick='SwitchToMainPage()'>
 <input type=button class='button disable' value='Правила игры' onclick='SwitchToRegulationsPage()'>
 <input type=button class='button disable' value='Игра' onclick='SwitchToGamePage()'>
 <input type=button class='button disable' value='Результаты' onclick='SwitchToBestPage()'>
@@ -21,14 +25,6 @@
     Введите ваше имя: <input name='namePlayer1' autocomplete=off><br />
     <input type='submit' value='готово'>
   </form>-->
-
-
-<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.10.4/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.min.css"/>
-<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.13.0/jquery.validate.min.js"></script>
-
-
 
 <script src="script/ajaxStorage.js"></script>
 <script src="script/localStorage.js"></script>
