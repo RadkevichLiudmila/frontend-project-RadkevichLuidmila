@@ -17,3 +17,42 @@ function matrixArray() {
 function sortResult(personA, personB) {
   return personB.result - personA.result;
 }
+
+// список лучших игроков
+function listBestPlayers() {
+  const people = [];
+  const storage = storageResultAJAX.getValue();
+  let list = '';
+  for (let key in storage) {
+    people.push({
+      name: key,
+      result: storage[key]
+    });
+  }
+  people.sort(sortResult);
+
+  list += `<p>`;
+  people.slice(0, 10)
+    .forEach(function (item, i) {
+      list += `${i + 1}. ${item.name} -  ${item.result}. <br>`;
+    });
+  list += `</p>`;
+
+  return list;
+}
+
+
+function findColor(color) {
+  if (color === 'red') {
+    return 'красный';
+  }
+  if (color === 'yellow') {
+    return 'желтый';
+  }
+  if (color === 'green') {
+    return 'зеленый';
+  }
+  if (color === 'blue') {
+    return 'синий';
+  }
+}

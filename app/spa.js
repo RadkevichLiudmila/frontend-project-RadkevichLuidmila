@@ -41,56 +41,39 @@ function SwitchToStateFromURLHash() {
 
       document.getElementById('iPageGame').style.display = 'none';
 
-    break;
+      break;
 
     case 'Regulations':
       PageHTML += `<h2>Правила игры.</h2>
       <p>Нажать на кнопку 'новая игра'. ` +
-      `На игровом поле появится кнопка 'поехали'. ` +
-      `После ее нажатия на игровом поле появися шарик, ` +
-      `который двигается за компьютерной мышкой. ` +
-      `Спустя каждые 3 секунды на поле появляются препятствия и бонусы. ` +
-      `При столкновении со стеной или препятствием игра заканчивается. ` +
-      `Цель собрать как можно больше бонусов.</p>`;
+        `На игровом поле появится кнопка 'поехали'. ` +
+        `После ее нажатия на игровом поле появися шарик, ` +
+        `который двигается за компьютерной мышкой. ` +
+        `Спустя каждые 3 секунды на поле появляются препятствия и бонусы. ` +
+        `При столкновении со стеной или препятствием игра заканчивается. ` +
+        `Цель собрать как можно больше бонусов.</p>`;
 
       document.getElementById('iPageGame').style.display = 'none';
-    break;
+      break;
 
     case 'Game':
 
       PageHTML += `<h2>Собиратель сокровищ</h2>`;
       document.getElementById('iPageGame').style.display = 'block';
-    
-    break;
+
+      break;
 
     case 'Best':
 
       PageHTML += `<h2>TOP-10 лучших игроков</h2>`;
       document.getElementById('iPageGame').style.display = 'none';
 
-      // выводим список лучших игроков
-      const people = [];
-      const storage = storageResultAJAX.getValue();
-      for (let key in storage) {
-        people.push({
-          name: key,
-          result: storage[key]
-        });
-      }
-      people.sort(sortResult);
-
-      PageHTML += `<p>`;
-      people.slice(0, 10)
-        .forEach(function (item, i) {
-          PageHTML += `${i + 1}. ${item.name} -  ${item.result}. <br>`;
-        });
-      PageHTML += `</p>`;
-
+      PageHTML += listBestPlayers();
       PageHTML += `<h2>Лучший результат на этом устройстве</h2>
       <p>${storageResultLocal.getStorage().nameBESTPlayer} - ${storageResultLocal.getStorage().goalBESTPlayer}</p>`;
-    break;
+      break;
   }
-  
+
   document.getElementById('iPage').innerHTML = PageHTML;
 }
 

@@ -3,13 +3,14 @@ let mouseX = 0; // переменная следит за положением �
 let mouseY = 0; // переменная следит за положением мыши по оси Y и передает данные шарику
 let distanceMouseForBallX = 0; // расстояние от начала браузера до игрового поля по Х
 let distanceMouseForBallY = 0; // расстояние от начала браузера до игрового поля по Y
-let timerForBarrier, timerForBonus; //таймеры
+let timerForBarrier,
+  timerForBonus; //таймеры
 
 const clickAudioBonus = new Audio('audio/koopaTroopaHide.wav');
 const clickAudioBarrier = new Audio('audio/creature.wav');
 
 const storageResultLocal = new TLocalStorage();
-const storageResultAJAX = new TAJAXStorage('http://fe.it-academy.by/AjaxStringStorage2.php','Radkevich_project_results');
+const storageResultAJAX = new TAJAXStorage('http://fe.it-academy.by/AjaxStringStorage2.php', 'Radkevich_project_results');
 
 const requestAnimatFrame =
   // находим, какой requestAnimationFrame доступен
@@ -26,7 +27,7 @@ const requestAnimatFrame =
 document.getElementById('ball').style.display = 'none';
 document.getElementById('bonus').style.display = 'none';
 
- document.getElementById('go')
+document.getElementById('go')
   .addEventListener('click', startGame, false);
 
 //----------- нажали на кнопку новая игра -------------------
@@ -45,7 +46,8 @@ function startGame() {
   document.body.style.cursor = 'none';
 
 
-  document.getElementById('ball').addEventListener('touchstart', touchStart, false);
+  document.getElementById('ball')
+    .addEventListener('touchstart', touchStart, false);
 
   distanceMouseForBallX = sizeBall / 2 + document.getElementById('playingField').offsetLeft;
   distanceMouseForBallY = sizeBall / 2 + document.getElementById('playingField').offsetTop;
@@ -53,7 +55,7 @@ function startGame() {
   mouseY = event.clientY - distanceMouseForBallY;
 
   document.body.addEventListener('mousemove', dragMove, false);
-  
+
   // запускаем таймеры
   PlanNextTick();
   timerForBarrier = setTimeout(createBarrier, 3000);
@@ -69,13 +71,14 @@ function dragMove(event) {
 
 // отслеживаем движение пальца
 function touchStart() {
-  document.getElementById('ball').addEventListener('touchmove', touchMove, false);
+  document.getElementById('ball')
+    .addEventListener('touchmove', touchMove, false);
 }
 
 function touchMove(event) {
-event = event || window.event;
-mouseX = event.touches[0].clientX - distanceMouseForBallX;
-mouseY = event.touches[0].clientY - distanceMouseForBallY;
+  event = event || window.event;
+  mouseX = event.touches[0].clientX - distanceMouseForBallX;
+  mouseY = event.touches[0].clientY - distanceMouseForBallY;
 }
 
 function PlanNextTick() {
@@ -104,10 +107,10 @@ function moveBall() {
     checkMoveGame = false;
   }
 
-    // проставляем координаты для игрока
-    player.PosX = mouseX;
-    player.PosY = mouseY;
-   
+  // проставляем координаты для игрока
+  player.PosX = mouseX;
+  player.PosY = mouseY;
+
 
   // проверяем координаты игрока
   if (player.PosX <= 0 || player.PosX >= arenaForPlay.Width - sizeBall || player.PosY <= 0 || player.PosY >= arenaForPlay.Height - sizeBall) {
@@ -181,7 +184,7 @@ function stopGame() {
   clearTimeout(timerForBarrier);
   clearTimeout(timerForBonus);
   document.body.removeEventListener('mousemove', dragMove, false);
- // document.getElementById('ball').removeEventListener('touchend', touchStop, false);
+  // document.getElementById('ball').removeEventListener('touchend', touchStop, false);
   document.getElementById('go').style.display = 'block';
   document.body.style.cursor = 'auto';
   theEnd();
