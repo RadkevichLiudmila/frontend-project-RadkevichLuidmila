@@ -58,12 +58,12 @@ class TAJAXStorage {
             v: JSON.stringify(self.storage)
           },
           cache: false,
-          complete: self.complete,
+          complete: self.complete(self),
           error: self.errorHandler
         });
       },
       error: self.errorHandler,
-      xhrFields: { onprogress: self.progress }
+      xhrFields: { onprogress: self.progress(self) }
     });
   };
 
@@ -71,15 +71,13 @@ class TAJAXStorage {
     console.log('Ошибка: ' + error);
   };
 
-  progress(EO) {
-    if (EO.lengthComputable) {
-      document.getElementById('canvas').style.display = 'block';
-      this.timerProgress = setInterval(showCanvas, 1000 / 60);
-    }
+  progress(self) {
+    document.getElementById('canvas').style.display = 'block';
+    self.timerProgress = setInterval(showCanvas, 1000 / 60);
   }
 
-  complete() {
+  complete(self) {
+    clearInterval(self.timerProgress);
     document.getElementById('canvas').style.display = 'none';
-    clearInterval(this.timerProgress);
   }
 }
