@@ -15,6 +15,12 @@ function openMyWidget() {
     .dialog({
       title: `Вы набрали ${goal.gameGoal} очков`
     });
+  $('.ui-dialog-titlebar')
+    .removeClass('ui-widget-header');
+  $('.ui-dialog-titlebar')
+    .addClass('modal-window');
+  $('.ui-button')
+    .addClass('button-size');
 }
 
 function safeResult() {

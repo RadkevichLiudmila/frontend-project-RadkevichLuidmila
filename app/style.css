@@ -89,9 +89,14 @@ p {
   font-weight : bold;
   color: red;
 }
-.ui-dialog-titlebar {
-  background-color: #76b1f5;
+.ui-dialog-titlebar.modal-window {
+  background-color: #7678f5;
+  color: white;
 }
-span {
-  color: black;
+form .ui-button.button-size {
+  margin: 10px;
+  padding: 10px;
+  width: 110px;
+  height: 50px;
+  color: #7678f5;
 }
