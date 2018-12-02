@@ -24,10 +24,12 @@ function openMyWidget() {
 }
 
 function safeResult() {
-  addResultLocalStorage();
-  addResultAJAXStorage();
-  $('#modalWindow')
-    .dialog('close');
+  if (formValid) {
+    addResultLocalStorage();
+    addResultAJAXStorage();
+    $('#modalWindow')
+      .dialog('close');
+  }
 }
 
 function noSafeResult() {

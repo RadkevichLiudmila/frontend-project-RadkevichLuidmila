@@ -189,6 +189,7 @@ function stopGame() {
   document.body.style.cursor = 'auto';
   theEnd();
   openMyWidget();
+  validateNamePlayer();
 }
 
 arenaForPlay.Update();

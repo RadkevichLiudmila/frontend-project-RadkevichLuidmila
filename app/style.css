@@ -100,3 +100,9 @@ form .ui-button.button-size {
   height: 50px;
   color: #7678f5;
 }
+.namePlayer.sErrorText {
+  color: red
+}
+.namePlayer.sErrorInput {
+  background-color: #FF8080
+}

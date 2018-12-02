@@ -85,6 +85,7 @@ function createInput(id, name) {
   const input = document.createElement('input');
   input.id = id;
   input.className = id;
+  input.name = 'namePlayer';
   input.value = name;
   input.setAttribute('autocomplete', 'off');
   return input;
