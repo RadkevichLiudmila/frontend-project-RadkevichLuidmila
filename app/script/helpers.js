@@ -43,16 +43,6 @@ function listBestPlayers() {
 
 
 function findColor(color) {
-  if (color === 'red') {
-    return 'красный';
-  }
-  if (color === 'yellow') {
-    return 'желтый';
-  }
-  if (color === 'green') {
-    return 'зеленый';
-  }
-  if (color === 'blue') {
-    return 'синий';
-  }
+  const obj = {'red':'красный', 'yellow':'желтый', 'green':'зеленый', 'blue':'синий'};
+  return obj[color];
 }
