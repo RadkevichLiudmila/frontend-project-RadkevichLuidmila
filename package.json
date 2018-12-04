@@ -1,12 +1,12 @@
 {
-  "name": "frontend-project-RadkevichLuidmila",
+  "name": "lesson-2-basic-constructions",
   "version": "1.0.0",
   "description": "",
   "main": "index.js"
-},
+  },
   "scripts": {
-  "lint": "eslint"
-},
+    "lint": "eslint"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
