@@ -1,22 +1,18 @@
 {
-  "name": "lesson-2-basic-constructions",
+  "name": "frontend-project-RadkevichLuidmila",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
+  "main": "index.js"
+},
   "scripts": {
-    "test": "jest",
-    "lint": "eslint"
-  },
+  "lint": "eslint"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "eslint": "^5.5.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "jest": "^23.5.0"
+    "eslint-plugin-import": "^2.14.0"
   }
 }
